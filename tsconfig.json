@@ -2,6 +2,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "NgxMultiFileUploader": [
+        "dist/ngx-multi-file-uploader/ngx-multi-file-uploader",
+        "dist/ngx-multi-file-uploader"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,

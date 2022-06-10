@@ -105,6 +105,37 @@
           }
         }
       }
+    },
+    "NgxMultiFileUploader": {
+      "projectType": "library",
+      "root": "projects/ngx-multi-file-uploader",
+      "sourceRoot": "projects/ngx-multi-file-uploader/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-multi-file-uploader/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-multi-file-uploader/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-multi-file-uploader/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-multi-file-uploader/src/test.ts",
+            "tsConfig": "projects/ngx-multi-file-uploader/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-multi-file-uploader/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "multi-files-uploader"
