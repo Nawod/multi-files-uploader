@@ -14,7 +14,7 @@ export class AppComponent {
   logs: any = 'Chose files';
   isUploading:boolean = false;
   chunkSize = 50120;
-  projectId = '1234a';
+  taskId = '1234a';
 
   getProgress(results :  any){
     // console.log(results)
@@ -34,6 +34,6 @@ export class AppComponent {
 
   addFile(event:any){
     this.fileList = [...this.fileList, ...event.target.files]
-    console.log(event.target.files)
   }
+
 }
