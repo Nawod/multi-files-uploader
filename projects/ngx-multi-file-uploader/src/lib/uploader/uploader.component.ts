@@ -27,7 +27,7 @@ export class UploaderComponent implements OnInit {
     private _uploadService: UploaderService,
 
   ) { 
-    this.chunkSize = 6000000;
+    this.chunkSize = 5000000;
     this.isUploading = false;
     this.currentFileIndex = 0;
     this.currentChunkIndex = 0;

@@ -3,7 +3,7 @@
 
 <div>
 <input type="file" class="file-upload" (change)="addFile($event)" multiple >
-<button type="button" (click)="uploadButtonHandler()" [disabled]="fileList.length == 0">Upload</button>
+<button type="button" (click)="uploadButtonHandler()" [disabled]="fileList.length == 0">{{!isUploading ? "Upload" : "Pause"}}</button>
 </div>
 
 <ul>
@@ -23,3 +23,31 @@
 </div>
 
 </div>
+
+<br><hr><br>
+
+<div>
+  <p>{{logs2}}</p>
+  
+  <div>
+  <input type="file" class="file-upload" (change)="addFile2($event)" multiple >
+  <button type="button" (click)="uploadButtonHandler2()" [disabled]="fileList2.length == 0">{{!isUploading2 ? "Upload" : "Pause"}}</button>
+  </div>
+  
+  <ul>
+    <li *ngFor="let file of fileList2; let i = index">
+      {{ i + 1 }} - {{ file.name }}
+    </li>
+  </ul>
+  
+  <div>
+  <lib-uploader 
+  [uploadRequestURL]="uploadRequestURL" [uploadURL]="uploadURL" [fileList]="fileList2"
+  [chunkSize]="chunkSize" [taskId]="taskId2"
+  (progress)="getProgress($event)" (logs)="getLogs2($event)"
+  [uploadButtonEvent]="uploadButtonEvent2"
+  >
+  </lib-uploader>
+  </div>
+  
+  </div>
