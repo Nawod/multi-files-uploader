@@ -12,15 +12,6 @@
   </li>
 </ul>
 
-<div>
-<lib-uploader 
-[uploadRequestURL]="uploadRequestURL" [uploadURL]="uploadURL" [fileList]="fileList"
-[chunkSize]="chunkSize" [taskId]="taskId"
-(progress)="getProgress($event)" (logs)="getLogs($event)"
-[uploadButtonEvent]="uploadButtonEvent"
->
-</lib-uploader>
-</div>
 
 </div>
 
@@ -40,14 +31,5 @@
     </li>
   </ul>
   
-  <div>
-  <lib-uploader 
-  [uploadRequestURL]="uploadRequestURL" [uploadURL]="uploadURL" [fileList]="fileList2"
-  [chunkSize]="chunkSize" [taskId]="taskId2"
-  (progress)="getProgress($event)" (logs)="getLogs2($event)"
-  [uploadButtonEvent]="uploadButtonEvent2"
-  >
-  </lib-uploader>
-  </div>
   
   </div>
