@@ -16,29 +16,29 @@ export class AppComponent implements OnInit {
   uploadURL = 'http://104.154.225.244:4001/upload?';
 
   _uploader: MultiFileUploader;
-  fileList : any[] = [];
+  fileList: any[] = [];
   logs: any = 'Chose files';
-  isUploading:boolean = false;
+  isUploading: boolean = false;
   attributeSet = {
-    uploadRequestURL : this.uploadRequestURL,
-    uploadURL : this.uploadURL,
-    chunkSize : this.chunkSize,
-    taskId : '1234a'
+    uploadRequestURL: this.uploadRequestURL,
+    uploadURL: this.uploadURL,
+    chunkSize: this.chunkSize,
+    taskId: '1234a'
   }
 
-  constructor (
+  constructor(
     private http: HttpClient
   ) {
     this._uploader = new MultiFileUploader(http)
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     //get upload status from the library
-    this._uploader.logObserve.subscribe(event=> {
+    this._uploader.logObserve.subscribe(event => {
       this.logs = event
     })
-    this._uploader.progressObserve.subscribe(event=>{
-      if(event.completed && event.currentFileIndex === this.fileList.length - 1){
+    this._uploader.progressObserve.subscribe(event => {
+      if (event.completed && event.currentFileIndex === this.fileList.length - 1) {
         this.isUploading = false;
         this._uploader.isUploading = false;
         this.fileList = []
@@ -53,21 +53,21 @@ export class AppComponent implements OnInit {
   }
 
   //Initiate values for uploader library and call the initail uploading request
-  uploadButtonHandler(){
-    if(this.fileList.length > 0){
-    this._uploader.isUploading = !this.isUploading;
-    this._uploader.attributeSet = this.attributeSet;
+  uploadButtonHandler() {
+    if (this.fileList.length > 0) {
+      this._uploader.isUploading = !this.isUploading;
+      this._uploader.attributeSet = this.attributeSet;
 
-    this.isUploading = !this.isUploading;
+      this.isUploading = !this.isUploading;
 
-    if(this.isUploading){
-    this._uploader.requestNewUpload()
-    }
+      if (this.isUploading) {
+        this._uploader.requestNewUpload()
+      }
     }
   }
 
   //append the selected files to file list and pass it to the library
-  addFile(event:any){
+  addFile(event: any) {
     this.fileList = [...this.fileList, ...event.target.files]
     this._uploader.fileList = this.fileList
   }
