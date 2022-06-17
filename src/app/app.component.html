@@ -14,22 +14,3 @@
 
 
 </div>
-
-<br><hr><br>
-
-<div>
-  <p>{{logs2}}</p>
-  
-  <div>
-  <input type="file" class="file-upload" (change)="addFile2($event)" multiple >
-  <button type="button" (click)="uploadButtonHandler2()" [disabled]="fileList2.length == 0">{{!isUploading2 ? "Upload" : "Pause"}}</button>
-  </div>
-  
-  <ul>
-    <li *ngFor="let file of fileList2; let i = index">
-      {{ i + 1 }} - {{ file.name }}
-    </li>
-  </ul>
-  
-  
-  </div>

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MultiFileUploader } from 'projects/ngx-multi-file-uploader/src/lib/multi-file-uploader.model';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,25 +8,23 @@ import { Subject } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  _uploader: MultiFileUploader;
-  logObserve!: Subject<any>;
 
-  uploadButtonEvent : Subject<any> = new Subject();
+  // uploadRequestURL = 'http://localhost:4001/upload-request?';
+  // uploadURL = 'http://localhost:4001/upload?';
+  chunkSize = 500000;
+  uploadRequestURL = 'http://104.154.225.244:4001/upload-request?';
+  uploadURL = 'http://104.154.225.244:4001/upload?';
+
+  _uploader: MultiFileUploader;
   fileList : any[] = [];
-  uploadRequestURL = 'http://localhost:4001/upload-request?';
-  uploadURL = 'http://localhost:4001/upload?';
-  // uploadRequestURL = 'http://104.154.225.244:4001/upload-request?';
-  // uploadURL = 'http://104.154.225.244:4001/upload?';
   logs: any = 'Chose files';
   isUploading:boolean = false;
-  chunkSize = 50000;
-  taskId = '1234a';
-
-  uploadButtonEvent2 : Subject<any> = new Subject();
-  fileList2 : any[] = [];
-  logs2: any = 'Chose files';
-  isUploading2:boolean = false;
-  taskId2 = '1234b';
+  attributeSet = {
+    uploadRequestURL : this.uploadRequestURL,
+    uploadURL : this.uploadURL,
+    chunkSize : this.chunkSize,
+    taskId : '1234a'
+  }
 
   constructor (
     private http: HttpClient
@@ -41,7 +38,11 @@ export class AppComponent implements OnInit {
       this.logs = event
     })
     this._uploader.progressObserve.subscribe(event=>{
-      console.log("Success ", event)
+      if(event.completed && event.currentFileIndex === this.fileList.length - 1){
+        this.isUploading = false;
+        this._uploader.isUploading = false;
+        this.fileList = []
+      }
     })
   }
 
@@ -55,10 +56,7 @@ export class AppComponent implements OnInit {
   uploadButtonHandler(){
     if(this.fileList.length > 0){
     this._uploader.isUploading = !this.isUploading;
-    this._uploader.taskId = this.taskId;
-    this._uploader.uploadRequestURL = this.uploadRequestURL;
-    this._uploader.uploadURL = this.uploadURL;
-    this._uploader.chunkSize = this.chunkSize
+    this._uploader.attributeSet = this.attributeSet;
 
     this.isUploading = !this.isUploading;
 
@@ -73,17 +71,4 @@ export class AppComponent implements OnInit {
     this.fileList = [...this.fileList, ...event.target.files]
     this._uploader.fileList = this.fileList
   }
-
-
-  uploadButtonHandler2(){
-    if(this.fileList2.length > 0){
-    this.isUploading2 = !this.isUploading2;
-    this.uploadButtonEvent2.next(this.isUploading2);
-    }
-  }
-
-  addFile2(event:any){
-    this.fileList2 = [...this.fileList2, ...event.target.files]
-  }
-
 }
