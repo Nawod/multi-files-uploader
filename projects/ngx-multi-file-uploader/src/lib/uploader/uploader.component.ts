@@ -57,7 +57,7 @@ export class UploaderComponent implements OnInit {
 
     const params = new URLSearchParams();
     params.set("name", file.name);
-    params.set("projectId", this.taskId);
+    params.set("taskId", this.taskId);
     params.set("chunkSize", (this.chunkSize).toString());
 
     const url =
@@ -144,7 +144,7 @@ export class UploaderComponent implements OnInit {
     params.set("totalChunks", (totalChunks).toString());
     params.set("chunkSize", (this.chunkSize).toString());
 
-    const url = "http://104.154.225.244:4001/upload?" + params.toString();
+    const url = this.uploadURL + params.toString();
 
     if (this.isUploading) {
       this._uploadService.upload(file,url,data).subscribe(
