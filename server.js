@@ -12,6 +12,6 @@ app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname + '/dist/multi-files-uploader/index.html'));
 });
 const server = http.createServer(app);
-server.listen(port, () => console.log('Running'));
+// server.listen(port, () => console.log('Running'));
 
 http.createServer(options, app).listen(4200);
