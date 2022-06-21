@@ -40,7 +40,7 @@ export class MultiFileUploader {
     params.set("name", file.name);
     params.set("taskId", this.attributeSet.taskId);
     params.set("chunkSize", (this.attributeSet.chunkSize).toString());
-    params.set("currentFileIndex", (this.currentFileIndex).toString());
+    params.set("currentFileIndex", (this.currentFileIndex + 1).toString());
 
     const url =
       this.attributeSet.uploadRequestURL + params.toString();
@@ -126,7 +126,7 @@ export class MultiFileUploader {
     params.set("currentChunkIndex", (this.currentChunkIndex).toString());
     params.set("totalChunks", (totalChunks).toString());
     params.set("chunkSize", (this.attributeSet.chunkSize).toString());
-    params.set("currentFileIndex", (this.currentFileIndex).toString());
+    params.set("currentFileIndex", (this.currentFileIndex + 1).toString());
 
     const url = this.attributeSet.uploadURL + params.toString();
 

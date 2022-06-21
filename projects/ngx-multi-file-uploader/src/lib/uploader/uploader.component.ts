@@ -59,7 +59,7 @@ export class UploaderComponent implements OnInit {
     params.set("name", file.name);
     params.set("taskId", this.taskId);
     params.set("chunkSize", (this.chunkSize).toString());
-    params.set("currentFileIndex", (this.currentFileIndex).toString());
+    params.set("currentFileIndex", (this.currentFileIndex + 1).toString());
 
     const url =
       this.uploadRequestURL + params.toString();
@@ -143,7 +143,7 @@ export class UploaderComponent implements OnInit {
     params.set("currentChunkIndex", this.currentChunkIndex);
     params.set("totalChunks", (totalChunks).toString());
     params.set("chunkSize", (this.chunkSize).toString());
-    params.set("currentFileIndex", (this.currentFileIndex).toString());
+    params.set("currentFileIndex", (this.currentFileIndex + 1).toString());
 
     const url = this.uploadURL + params.toString();
 
