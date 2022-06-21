@@ -1,16 +1,18 @@
 <div>
-<p>{{logs}}</p>
+  test 1
+  <p>{{logs}}</p>
 
-<div>
-<input type="file" class="file-upload" (change)="addFile($event)" multiple >
-<button type="button" (click)="uploadButtonHandler()" [disabled]="fileList.length == 0">{{!isUploading ? "Upload" : "Pause"}}</button>
-</div>
+  <div>
+    <input type="file" class="file-upload" (change)="addFile($event)" multiple>
+    <button type="button" (click)="uploadButtonHandler()" [disabled]="fileList.length == 0">{{!isUploading ? "Upload" :
+      "Pause"}}</button>
+  </div>
 
-<ul>
-  <li *ngFor="let file of fileList; let i = index">
-    {{ i + 1 }} - {{ file.name }}
-  </li>
-</ul>
+  <ul>
+    <li *ngFor="let file of fileList; let i = index">
+      {{ i + 1 }} - {{ file.name }}
+    </li>
+  </ul>
 
 
 </div>

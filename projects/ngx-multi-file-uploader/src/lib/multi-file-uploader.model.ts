@@ -164,7 +164,10 @@ export class MultiFileUploader {
             if (this.isUploading) {
               this.logObserve.next("Network Error! Try to Reconnect...");
               console.log("Try to reconnect from upload!");
-              this.requestNewUpload();
+              // this.requestNewUpload();
+              this.readAndUploadCurrentChunk(
+                fileId
+              );
             }
           }, 3000);
         }
