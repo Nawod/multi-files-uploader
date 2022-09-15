@@ -1,3 +1,4 @@
+import { S3FileUploader } from './../model/s3-file-uploader';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MultiFileUploader } from 'projects/ngx-multi-file-uploader/src/lib/multi-file-uploader.model';
@@ -27,7 +28,8 @@ export class AppComponent implements OnInit {
   }
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private _s3FileUploader: S3FileUploader,
   ) {
     this._uploader = new MultiFileUploader(http)
   }
@@ -45,6 +47,11 @@ export class AppComponent implements OnInit {
       }
     })
   }
+
+  // testClick(){
+  //   this._s3FileUploader.fileName = "new name";
+  //   this._s3FileUploader.start()
+  // }
 
   ngOnDestroy(): void {
     //destroy the event listners

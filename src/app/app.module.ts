@@ -1,3 +1,4 @@
+import { S3FileUploader } from './../model/s3-file-uploader';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +19,10 @@ import { NgxMultiFileUploaderModule } from 'NgxMultiFileUploader';
     HttpClientModule,
     CommonModule,
   ],
-  providers: [HttpClientModule],
+  providers: [
+    HttpClientModule,
+    S3FileUploader
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
