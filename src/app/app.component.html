@@ -1,11 +1,10 @@
 <div>
 <p>{{logs}}</p>
-<!-- <button type="button" (click)="testClick()">test</button> -->
 <div>
 <input type="file" class="file-upload" (change)="addFile($event)" multiple >
 <button type="button" (click)="uploadButtonHandler()" [disabled]="fileList.length == 0">{{!isUploading ? "Upload" : "Pause"}}</button>
 </div>
-
+<button type="button" (click)="onCancel()">cancel</button>
 <ul>
   <li *ngFor="let file of fileList; let i = index">
     {{ i + 1 }} - {{ file.name }}

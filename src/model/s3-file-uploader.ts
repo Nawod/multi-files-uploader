@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { UploadrService } from './../service/uploadr.service';
 
@@ -18,8 +19,11 @@ export class S3FileUploader {
     uploadedParts : Array<any>;
     fileId : any;
     fileKey : any;
-    onProgressFn = () => {}
-    onErrorFn = () => {}
+    isUploading : boolean;
+    currentFileIndex : number;
+
+    logObserve: Subject<any> = new Subject();
+    progressObserve: Subject<any> = new Subject();
 
     constructor(
         private _uploaderService: UploadrService,
@@ -36,8 +40,8 @@ export class S3FileUploader {
         this.uploadedParts = []
         this.fileId = null
         this.fileKey = null
-        this.onProgressFn = () => {}
-        this.onErrorFn = () => {}
+        this.isUploading = false
+        this.currentFileIndex = 0;
     }
 
     /**
@@ -45,8 +49,10 @@ export class S3FileUploader {
      * new multipart upload
      */
     start():void {
-        // console.log(this.fileName);
-        this.initialize()
+        console.log("started uploading : ", this.file.name)
+        if(this.isUploading){
+          this.initialize()
+        }
       }
     
     /**
@@ -55,10 +61,10 @@ export class S3FileUploader {
     async initialize() {
         try {
           let fileName = this.fileName
-          const ext = this.file.name.split(".").pop()
-          if (ext) {
-            fileName += `.${ext}`
-          }
+          // const ext = this.file.name.split(".").pop()
+          // if (ext) {
+          //   fileName += `.${ext}`
+          // }
     
           const videoInitializationUploadInput = {
             name: fileName,
@@ -68,6 +74,7 @@ export class S3FileUploader {
             .initializeMultipartUpload(videoInitializationUploadInput)
             .subscribe(
                 (response: any) => {
+                    console.log("presigned urls :",response)
                     this.getPresignedUrls(response);
                 },
                 (error: any) => {
@@ -86,7 +93,7 @@ export class S3FileUploader {
      */
     async getPresignedUrls(initializeReponse: any){
         try {
-          const AWSFileDataOutput = initializeReponse.data
+          const AWSFileDataOutput = initializeReponse
     
           this.fileId = AWSFileDataOutput.fileId
           this.fileKey = AWSFileDataOutput.fileKey
@@ -103,7 +110,8 @@ export class S3FileUploader {
             .getPresignedUrls(AWSMultipartFileDataInput)
             .subscribe(
                 (response: any) => {
-                    const newParts = response.data.parts
+                    console.log("presigned urls",response)
+                    const newParts = response.parts
                     this.parts.push(...newParts)
             
                     this.sendNext()
@@ -122,6 +130,7 @@ export class S3FileUploader {
        * @returns null
        */
       sendNext():void {
+        if(this.isUploading){
         const activeConnections = Object.keys(this.activeConnections).length
     
         if (activeConnections >= this.threadsQuantity) {
@@ -142,7 +151,10 @@ export class S3FileUploader {
           const chunk = this.file.slice(sentSize, sentSize + this.chunkSize)
     
           const sendChunkStarted = () => {
-            this.sendNext()
+            if(this.isUploading){
+              console.log("next part")
+              this.sendNext()
+            }
           }
     
           this.sendChunk(chunk, part, sendChunkStarted)
@@ -155,6 +167,7 @@ export class S3FileUploader {
               this.complete(error)
             })
         }
+      }
       }
     
       async complete(error?:any) {
@@ -193,6 +206,7 @@ export class S3FileUploader {
             .finalizeUpload(videoFinalizationMultiPartInput)
             .subscribe(
                 (response: any) => {
+                  this.progressObserve.next({ uplodedFileIndex: this.currentFileIndex })
                 },
                 (error: any) => {
                     console.log("finalize error :", error)
@@ -251,11 +265,11 @@ export class S3FileUploader {
     
           const percentage = Math.round((sent / total) * 100)
     
-        //   this.onProgressFn({
-        //     sent: sent,
-        //     total: total,
-        //     percentage: percentage,
-        //   })
+          this.logObserve.next({
+            sent: sent,
+            total: total,
+            percentage: percentage,
+          })
         }
       }
     
@@ -268,7 +282,7 @@ export class S3FileUploader {
        */
       upload(file:any, part:any, sendChunkStarted:any) {
         return new Promise((resolve, reject) => {
-          if (this.fileId && this.fileKey) {
+          if (this.fileId && this.fileKey && this.isUploading) {
             const xhr = (this.activeConnections[part.PartNumber - 1] = new XMLHttpRequest())
     
             sendChunkStarted();
@@ -317,12 +331,12 @@ export class S3FileUploader {
       }
     
       onProgress(onProgress:any) {
-        this.onProgressFn = onProgress
+        this.logObserve.next(onProgress)
         return this
       }
     
       onError(onError:any) {
-        this.onErrorFn = onError
+        this.logObserve.next(onError)
         return this
       }
     

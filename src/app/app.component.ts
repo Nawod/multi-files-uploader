@@ -12,38 +12,37 @@ export class AppComponent implements OnInit {
 
   // uploadRequestURL = 'http://localhost:4001/upload-request?';
   // uploadURL = 'http://localhost:4001/upload?';
-  chunkSize = 500000;
-  uploadRequestURL = 'http://104.154.225.244:4001/upload-request?';
-  uploadURL = 'http://104.154.225.244:4001/upload?';
+  // uploadRequestURL = 'http://104.154.225.244:4001/upload-request?';
+  // uploadURL = 'http://104.154.225.244:4001/upload?';
 
-  _uploader: MultiFileUploader;
+  // _uploader: MultiFileUploader;
   fileList: any[] = [];
   logs: any = 'Chose files';
   isUploading: boolean = false;
-  attributeSet = {
-    uploadRequestURL: this.uploadRequestURL,
-    uploadURL: this.uploadURL,
-    chunkSize: this.chunkSize,
-    taskId: '1234a'
-  }
+  currentFileIndex : number = 0;
 
   constructor(
-    private http: HttpClient,
     private _s3FileUploader: S3FileUploader,
   ) {
-    this._uploader = new MultiFileUploader(http)
+    // this._uploader = new MultiFileUploader(http)
   }
 
   ngOnInit(): void {
     //get upload status from the library
-    this._uploader.logObserve.subscribe(event => {
+    this._s3FileUploader.logObserve.subscribe(event => {
       this.logs = event
+      console.log("logs : ",event)
     })
-    this._uploader.progressObserve.subscribe(event => {
-      if (event.completed && event.currentFileIndex === this.fileList.length - 1) {
+    this._s3FileUploader.progressObserve.subscribe(event => {
+      if (event?.uplodedFileIndex != this.fileList.length - 1) {
+        console.log("file ", event.uplodedFileIndex, "uploaded")
+        this.currentFileIndex = event.uplodedFileIndex + 1
+        this.uploadNextFile()
+      } else {
         this.isUploading = false;
-        this._uploader.isUploading = false;
+        this._s3FileUploader.isUploading = false;
         this.fileList = []
+        console.log("upload completed")
       }
     })
   }
@@ -55,27 +54,44 @@ export class AppComponent implements OnInit {
 
   ngOnDestroy(): void {
     //destroy the event listners
-    this._uploader.logObserve.unsubscribe()
-    this._uploader.progressObserve.unsubscribe()
+    this._s3FileUploader.logObserve.unsubscribe()
+    this._s3FileUploader.progressObserve.unsubscribe()
   }
 
   //Initiate values for uploader library and call the initail uploading request
   uploadButtonHandler() {
     if (this.fileList.length > 0) {
-      this._uploader.isUploading = !this.isUploading;
-      this._uploader.attributeSet = this.attributeSet;
-
+      this._s3FileUploader.isUploading = !this.isUploading;
       this.isUploading = !this.isUploading;
 
       if (this.isUploading) {
-        this._uploader.requestNewUpload()
+        this._s3FileUploader.currentFileIndex = this.currentFileIndex;
+        this._s3FileUploader.fileName = this.fileList[this.currentFileIndex].name;
+        this._s3FileUploader.file = this.fileList[this.currentFileIndex];
+        this._s3FileUploader.start()
       }
     }
   }
 
+  uploadNextFile(){
+    if (this.isUploading) {
+      this._s3FileUploader.uploadedParts = []
+      this._s3FileUploader.currentFileIndex = this.currentFileIndex;
+      this._s3FileUploader.fileName = this.fileList[this.currentFileIndex].name;
+      this._s3FileUploader.file = this.fileList[this.currentFileIndex];
+      this._s3FileUploader.start()
+    }
+  }
+
   //append the selected files to file list and pass it to the library
-  addFile(event: any) {
+  addFile(event: any):void {
     this.fileList = [...this.fileList, ...event.target.files]
-    this._uploader.fileList = this.fileList
+  }
+
+  onCancel():void {
+    if (this.isUploading) {
+      this._s3FileUploader.abort()
+      this.fileList = []
+    }
   }
 }

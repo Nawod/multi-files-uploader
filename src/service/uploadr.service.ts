@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class UploadrService {
-  apiUrl = "http://localhost:3000"
+  apiUrl = "http://104.154.225.244:3000"
   // headers = { "Content-Type": "application/octet-stream" };
 
   constructor(private _http: HttpClient) {}
@@ -17,7 +17,7 @@ export class UploadrService {
    */
   initializeMultipartUpload(data: any): any {
     return this._http.post<any>(
-      `${this.apiUrl}/uploads/initializeMultipartUpload`,data
+      `${this.apiUrl}/api/fileUpload/initializeMultipartUpload`,data
       // `${this.apiUrl}/uploads/initializeMultipartUpload`,data, {"headers": headers}
     );
   }
@@ -29,7 +29,7 @@ export class UploadrService {
    */
   getPresignedUrls(data: any): any {
     return this._http.post<any>(
-      `${this.apiUrl}/uploads/getMultipartPreSignedUrls`,data
+      `${this.apiUrl}/api/fileUpload/getMultipartPreSignedUrls`,data
     );
   }
 
@@ -39,8 +39,9 @@ export class UploadrService {
    * @returns 
    */
   finalizeUpload(data: any): any {
+    console.log("finalize inputs: ",data)
     return this._http.post<any>(
-      `${this.apiUrl}/uploads/finalizeMultipartUpload`,data
+      `${this.apiUrl}/api/fileUpload/finalizeMultipartUpload`,data
     );
   }
 }
